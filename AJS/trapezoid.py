@@ -39,5 +39,8 @@ def trapezoid(f,a, b, e):
 		for i in range(0,n):
 			h = (b-a)/n
 			Approx+= 0.5*(f(a+i*h)+f(a+(i+1)*h))*h
+		if count>1000000000:
+			raise ValueError("Woah, dude. What happened?")
+			
 #Return the approximation along with the number of loops run.
 	return Approx,count
