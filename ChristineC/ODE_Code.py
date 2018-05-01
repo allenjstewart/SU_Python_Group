@@ -272,13 +272,22 @@ print("Generate another solution using scipy.integrate.solve_ivp:")
 sol5b = solve_ivp(lambda x,y: (y-x)**2,[0,10],[1])
 print("solve_ivp complete - yay!")
 
+# The actual solution to this IVP is y = (t^2 - t -1)/(t - 1)
+exact_sol5b = np.zeros((total_steps,2))
+exact_sol5b[0,1]=1
+for i in range(1,total_steps,1):
+    exact_sol5b[i,0] = exact_sol5b[i-1,0]+stepsize
+    exact_sol5b[i,1] = (exact_sol5b[i,0]*exact_sol5b[i,0] - exact_sol5b[i,0] - 1)/(exact_sol5b[i,0] - 1)
+
+plt.plot(exact_sol5b[:,0],exact_sol5b[:,1],'k-',label="Exact Solution")
 plt.plot(euler_sol5b[:,0],euler_sol5b[:,1],'r--',marker="*",label="Euler's Method")
 plt.plot(rk4_sol5b[:,0],rk4_sol5b[:,1],'b-.',marker="o",label="RK4 Method")
 plt.plot(sol5b.t[:],sol5b.y[0],'g.',marker="o", markersize=10,label="SciPy solve_ivp")
 plt.title("Problem 5b: Numerical Solutions to the IVP y' = (y-x)^2 + 1, y(0) = 1")
 plt.xlabel("t")
 plt.ylabel("y")
-plt.legend(loc="upper left")
+plt.ylim(-0.5, 10) 
+plt.legend(loc="lower right")
 plt.show()
 
 
