@@ -286,7 +286,7 @@ plt.plot(sol5b.t[:],sol5b.y[0],'g.',marker="o", markersize=10,label="SciPy solve
 plt.title("Problem 5b: Numerical Solutions to the IVP y' = (y-x)^2 + 1, y(0) = 1")
 plt.xlabel("t")
 plt.ylabel("y")
-plt.ylim(-0.5, 10) 
+plt.ylim(-0.5, 10)
 plt.legend(loc="lower right")
 plt.show()
 
