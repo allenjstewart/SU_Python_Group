@@ -75,6 +75,69 @@ def RK4(f,t0,y0,step,num_steps):
     print("RK4 Complete - yay!\n\n")
     return sol
 
+######################################################
+#
+#   Code for 2x2 systems:
+#
+######################################################
+
+def EulerSys(f,t0,y0,step,num_steps):
+    # Use Euler's Method to solve dy/dt = f(t,y) given x(t0) = x0, y(t0) = y0
+    # where y is a vector: y = [x, y], and y0 is a vector: y0 = [x0, y0]
+    # with stepsize step and number of steps: num_steps
+    # Store the output in the array sol.
+    # The first column stores t-values, and the second column stores x-values,
+    # the third column stores y-values
+    sol = np.zeros((num_steps,3))
+    sol[0,0] = t0
+    sol[0,1] = y0[0]
+    sol[0,2] = y0[1]
+    for i in range(1,num_steps,1):
+        # print("Array Storage Method: When t = %f, y = %f" % (sol[i-1,0], sol[i-1,1]))
+        mx = f(sol[i-1,0], [sol[i-1,1], sol[i-1,2]])[0] # evaluate f at the previous time
+        my = f(sol[i-1,0], [sol[i-1,1], sol[i-1,2]])[1] # evaluate f at the previous time
+        # step forward in time according to Euler's Method:
+        sol[i,0] = sol[i-1,0] + step
+        sol[i,1] = sol[i-1,1] + mx*step
+        sol[i,2] = sol[i-1,2] + my*step
+    #print("Array Storage Method: When t = %f, x = %f, y = %f" % (sol[num_steps-1,0], sol[num_steps-1,1], sol[num_steps-1,2]))
+    print("Euler (System) Complete - yay!\n\n")
+    return sol
+
+
+def RK4Sys(f,t0,y0,step,num_steps):
+    # Use RK4 to solve dy/dt = f(t,y) given x(t0) = x0, y(t0) = y0
+    # where y is a vector: y = [x, y], and y0 is a vector: y0 = [x0, y0]
+    # with stepsize step and number of steps: num_steps
+    k1 = k2 = k3 = k4 = 0
+    l1 = l2 = l3 = l4 = 0
+    # Store the output in the array sol.
+    # The first column stores t-values, and the second column stores x-values,
+    # the third column stores y-values
+    sol = np.zeros((num_steps,3))
+    sol[0,0] = t0
+    sol[0,1] = y0[0]
+    sol[0,2] = y0[1]
+    for i in range(1,num_steps,1):
+        #print("Array Storage Method: When t = %f, y = %f" % (sol[i-1,0], sol[i-1,1]))
+        k1 = step*f(sol[i-1,0], [sol[i-1,1], sol[i-1,2]])[0]
+        l1 = step*f(sol[i-1,0], [sol[i-1,1], sol[i-1,2]])[1]
+        k2 = step*f(sol[i-1,0] + step/2, [sol[i-1,1] + k1/2, sol[i-1,2] + l1/2])[0]
+        l2 = step*f(sol[i-1,0] + step/2, [sol[i-1,1] + k1/2, sol[i-1,2] + l1/2])[1]
+        k3 = step*f(sol[i-1,0] + step/2, [sol[i-1,1] + k2/2, sol[i-1,2] + l2/2])[0]
+        l3 = step*f(sol[i-1,0] + step/2, [sol[i-1,1] + k2/2, sol[i-1,2] + l2/2])[1]
+        k4 = step*f(sol[i-1,0] + step, [sol[i-1,1] + k3, sol[i-1,2] + l3])[0]
+        l4 = step*f(sol[i-1,0] + step, [sol[i-1,1] + k3, sol[i-1,2] + l3])[1]
+        mx = (k1 + 2*k2 + 2*k3 + k4)/6
+        my = (l1 + 2*l2 + 2*l3 + l4)/6
+        # step forward in time according to RK4:
+        sol[i,0] = sol[i-1,0] + step
+        sol[i,1] = sol[i-1,1] + mx
+        sol[i,2] = sol[i-1,2] + my
+
+    print("Array Storage Method: When t = %f, y = %f" % (sol[num_steps-1,0], sol[num_steps-1,1]))
+    print("RK4 Complete - yay!\n\n")
+    return sol
 
 
 ######################################################
@@ -196,7 +259,7 @@ plt.show()
 
 print("\n\nProblem 5b: Solve the IVP:\n y' = (y-x)^2 + 1, y(0) = 1, until t_f = 10:")
 stepsize = .05
-total_steps = int(10/0.05) # t_f/stepsize = 10/0.05
+total_steps = int(10/0.05)+1 # t_f/stepsize = 10/0.05
 print("\nUse stepsize %f, and run for %d timesteps.\n" % (stepsize, total_steps))
 
 print("Run the Euler's Method code:")
@@ -230,7 +293,16 @@ def fun5c(t,y):
 print("Generate a solution using scipy.integrate.solve_ivp:")
 #from scipy.integrate import solve_ivp
 sol5c = solve_ivp(fun5c,[0,10],[5,6])
-print(sol5c)
+
+print("Run the Euler's Method System code:")
+euler_sol5c = EulerSys(fun5c,0,[5,6],stepsize,total_steps)
+print("Run the RK4 System code:")
+rk4_sol5c = RK4Sys(fun5c,0,[5,6],stepsize,total_steps)
+
+plt.plot(euler_sol5c[:,0],euler_sol5c[:,1],'r--',marker="*",label="Euler's Method, x(t)")
+plt.plot(euler_sol5c[:,0],euler_sol5c[:,2],'b--',marker="*",label="Euler's Method, y(t)")
+plt.plot(rk4_sol5c[:,0],rk4_sol5c[:,1],'y-.',marker="x",label="RK4 Method, x(t)")
+plt.plot(rk4_sol5c[:,0],rk4_sol5c[:,2],'g-.',marker="x",label="RK4 Method, y(t)")
 plt.plot(sol5c.t[:],sol5c.y[0,:],'g-',marker="o", markersize=10,label="SciPy solve_ivp, x(t)")
 plt.plot(sol5c.t[:],sol5c.y[1,:],'k--',marker="o", markersize=10,label="SciPy solve_ivp, y(t)")
 plt.title("Problem 5c: Numerical Solutions to the IVP\n -x' + y' = 6, -x' - y' = 13t, x(0) = 5, y(0) = 6")
@@ -249,11 +321,19 @@ def fun5d(t,y):
 print("Generate a solution using scipy.integrate.solve_ivp:")
 #from scipy.integrate import solve_ivp
 sol5d = solve_ivp(fun5d,[0,10],[5,6])
-print(sol5c)
+print("Run the Euler's Method System code:")
+euler_sol5d = EulerSys(fun5d,0,[5,6],stepsize,total_steps)
+print("Run the RK4 System code:")
+rk4_sol5d = RK4Sys(fun5d,0,[5,6],stepsize,total_steps)
+
+plt.plot(euler_sol5d[:,0],euler_sol5d[:,1],'r--',marker="*",label="Euler's Method, x(t)")
+plt.plot(euler_sol5d[:,0],euler_sol5d[:,2],'b--',marker="*",label="Euler's Method, y(t)")
+plt.plot(rk4_sol5d[:,0],rk4_sol5d[:,1],'y-.',marker="x",label="RK4 Method, x(t)")
+plt.plot(rk4_sol5d[:,0],rk4_sol5d[:,2],'g-.',marker="x",label="RK4 Method, y(t)")
 plt.plot(sol5d.t[:],sol5d.y[0,:],'g-',marker="o", markersize=10,label="SciPy solve_ivp, x(t)")
 plt.plot(sol5d.t[:],sol5d.y[1,:],'k--',marker="o", markersize=10,label="SciPy solve_ivp, y(t)")
 plt.title("Problem 5d: Numerical Solutions to the IVP\n x' + y' = 6, -x' + y' = 13t, x(0) = 5, y(0) = 6")
 plt.xlabel("t")
 plt.ylabel("y")
-plt.legend(loc="lower left")
+plt.legend(loc="upper left")
 plt.show()
