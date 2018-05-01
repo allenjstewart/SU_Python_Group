@@ -5,7 +5,15 @@
 #
 # Example code for Trapezoid found at:
 # http://hplgit.github.io/edu/py_vs_m/._numerical_programming_guide001.html
-
+#
+######################################################
+#   https://user.xmission.com/~emailbox/ascii_cats.htm
+#
+#                )\._.,--....,'``.       
+#  .b--.        /;   _.. \   _\  (`._ ,.
+# `=,-,-'~~~   `----(,_..'--(,_..'`-.;.'
+#
+######################################################
 # libraries needed for MonteCarlo:
 
 import math
