@@ -50,7 +50,7 @@ def NewSolve(f,var,point,steps):
 #So I need to keep chopping of the first portion of varpoint
 #In order to keep varpoint at the correct length
 			varpoint=varpoint[len(point):2*len(point)]
-		for k in range(0, len(point
+		for k in range(0, len(point)):
 #Create the vector of f values
 #Evaluate the kth function in f at the variable values defined by varpoint
 #Should be noted that sympify uses eval which runs strings as python Code
@@ -62,3 +62,4 @@ def NewSolve(f,var,point,steps):
 #Newton's Method
 		numpoint=numpoint-np.dot(np.linalg.inv(Jpoint),fnumpoint)
 	return numpoint
+print(NewSolve(['x^2-x-1'],['x'],[0],10))
