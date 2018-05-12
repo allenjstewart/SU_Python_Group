@@ -1,3 +1,4 @@
+
 # Author: AJ Stewart
 # This code uses random processes to create partitions and then
 # Simpson's method to approximate a definite integral
@@ -87,9 +88,7 @@ def simpson(f,a, b, e):
             h = (in_part[i+1]-in_part[i])/float(n)
             sub_sum=f(in_part[i])+f(in_part[i+1])
 #Simpson's method on the interval defined by in_part[i] to in_part[i+1]
-            for j in range(1,n,2):
-               sub_sum+= 4*f(in_part[i]+j*h)
-            for j in range(2,n,2):
-               sub_sum+= 2*f(in_part[i]+j*h)
-            Approx+=sub_sum*h/3
-    return Approx
+            Approx+=sub_sum*h/3  
+        count=count+1        
+        print(Approx, count, time.clock()-time_start)        
+    return Approx, time.clock()-time_start
