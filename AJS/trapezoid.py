@@ -1,6 +1,7 @@
 # Author: AJ Stewart
-# This code uses the trapezoid method to approximate a definite integral
-# Also this code does not require a specified number of sub intervals
+# This code uses random processes and the trapezoid method
+# To approximate a definite integral
+# This code does not require a specified number of sub intervals
 # Instead the user enters an error and subintervals are added until
 # Two adjacent approximations are within the error of eachother
 #
@@ -12,35 +13,95 @@
 #
 #####################################
 #
-# I wrote this code first
-# But writing comments second
-# Are you entertained?
+# Working on a plane
+# No time to write a haiku
+# Well, I guess I lied
 #####################################
 
-import scipy as sp #Do I need this?
-import numpy as np #Seems like I don't need this either...
-import math as m #Probably need this in case someone inputs a strange function
-import random as rand #At some point I will make this code more effective with singular points
+import numpy as np #Arrays!
+import math as math #Functions!
+import random as rand #And Distributions! Oh, My!
+import time #
 
 def trapezoid(f,a, b, e):
-#Initialize two random rectangular approximations of the integral
-	prevApprox=(b-a)*f((b-a)*rand.random()+a)
-	Approx=(b-a)*f((b-a)*rand.random()+a)
-#Initialize the number of subintervals
-	n=1
-	count=0
-#The loop will run while the two approximations differ by
-#A value greater that the user given error
-	while (abs(Approx-prevApprox)>e):
-		n=2*n
-		count=count+1
-		prevApprox=Approx
-		Approx=0
-		for i in range(0,n):
-			h = (b-a)/n
-			Approx+= 0.5*(f(a+i*h)+f(a+(i+1)*h))*h
-		if count>1000000000:
-			raise ValueError("Woah, dude. What happened?")
-			
-#Return the approximation along with the number of loops run.
-	return Approx,count
+
+###################
+#Initialize Variables
+###################
+
+    time_start=time.clock() #Start the computation clock
+#Two initial approximations
+    prevApprox=[(b-a)*f((b-a)*rand.random()+a)]
+    Approx=(b-a)*f((b-a)*rand.random()+a)
+    n=math.floor(-1*math.log10(e)) #The intial amount of subintervals
+    error=0.5*e
+#Check the endpoints.
+#If the function isn't defined shift the endpoints
+    try:
+        f(a)
+    except ValueError:
+        a=a+e/100 #I chose 100 arbitrarily
+    try:
+        f(b)
+    except ValueError:
+        b=b-e/100
+
+#######################
+#Create the initial partition
+#######################
+#Start at the left endpoint
+#The loop creates an initial distribution with at approximately n subintervals
+#n depends on the error value given by the use
+#Random values are choosen by a Weibull distribution
+#The Weibull distribution guarantees that there is a 99% chance
+#That the next value in the partition is between .6(b-a)/n and 1.2(b-a)/n
+#Of the previous value
+#The loop will run until the last value appended is greater than b
+###############################################################################
+
+    in_part=[a]
+    while (in_part[len(in_part)-1]<b):
+        in_part.append((b-a)*rand.weibullvariate(1,10)/n+in_part[len(in_part)-1])
+        if in_part[len(in_part)-1]>=b:
+            in_part[len(in_part)-1]=b
+######################
+#The bulk of the approximation
+######################
+#Now that the intial parition of a and b has been created
+#We run the trapezoid method on each of the subintervals in in_part
+#The code will run until
+#(a) it has been 10 seconds and the approximations are not within .1
+#(b) the approximation and the average of the previous two approximations
+#    is within the error tolerance
+#I take the average of two previous approximations in order to reduce noise
+###############################################################################
+
+    while (abs(Approx-np.average(prevApprox))>error):
+#Stop if the intergral is not converging
+        if (time.clock()-time_start>10) and (abs(Approx-prevApprox[len(prevApprox)-1])>.1):
+          return print("The integral does not exist")
+#Create a new partition
+        part=[a] #Start at the left endpoint
+        for i in range(0,len(in_part)-1):
+#If the length of the pervious subinterval is
+#Greater than the error
+#Divide the subinterval by picking a random point
+#In the subinterval
+#Otherwise leave the subinterval alone
+            if abs(in_part[i+1]-in_part[i])>error:
+             part.append((in_part[i+1]-in_part[i])*rand.random()+in_part[i])
+            part.append(in_part[i+1])
+#Append the previous approximation to
+#An array of approximations
+        prevApprox.append(Approx)
+#Reduce the array of previous approximations 
+#To length two
+        if(len(prevApprox)>2):
+               prevApprox=prevApprox[len(prevApprox)-2:]
+        Approx=0
+#The Trapezoid method
+        for i in range(0,len(part)-1):
+            h = part[i+1]-part[i]
+            Approx += 0.5*(f(part[i+1])+f(part[i]))*h
+        in_part = part
+    return Approx, time.clock()-time_start
