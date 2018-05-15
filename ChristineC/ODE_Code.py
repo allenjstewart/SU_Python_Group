@@ -228,7 +228,7 @@ def RK4Sys(f,t0,y0,step,num_steps):
 #
 ############################################
 
-# 5a) y' = t - y, y(0) = 4, until t_f = 10:
+#5a) y' = t - y, y(0) = 4, until t_f = 10:
 
 print("\n\nProblem 5a: Solve the IVP:\n y' = t - y, y(0) = 4, until t_f = 10:")
 stepsize = .05
@@ -346,3 +346,56 @@ plt.xlabel("t")
 plt.ylabel("y")
 plt.legend(loc="upper left")
 plt.show()
+
+# # Joseph's Question
+# def joseph(t,y):
+#     dydt = y**3/(math.exp(2*t)+y**2)
+#     return dydt
+
+print("\n\nJoseph's Challenge:")
+total_steps = 10000
+stepsize = 10/total_steps
+print("\nUse stepsize %f, and run for %d timesteps.\n" % (stepsize, total_steps))
+
+print("Run the Euler's Method code:")
+jeulera = Euler(lambda t,y: y**3/(math.exp(2*t)+y**2),0,0.01,stepsize,total_steps)
+jeulerb = Euler(lambda t,y: y**3/(math.exp(2*t)+y**2),0,0.001,stepsize,total_steps)
+
+print("Run the RK4 code:")
+rk4_ja = RK4(lambda t,y: y**3/(math.exp(2*t)+y**2),0,0.01,stepsize,total_steps)
+rk4_jb = RK4(lambda t,y: y**3/(math.exp(2*t)+y**2),0,0.001,stepsize,total_steps)
+print("Generate another solution using scipy.integrate.solve_ivp:")
+#joseph_a = solve_ivp(lambda t,y: y**3/(math.exp(2*t)+y**2),[0,10],[0.01])
+#joseph_a = solve_ivp(lambda t,y: y**3/(math.exp(2*t)+y**2),[0,10],[0.001])
+print("solve_ivp complete - yay!")
+#
+# plt.plot(jeulera[:,0],jeulera[:,1],'r--',marker="*",label="Euler's Method, y0 = 0.01")
+# plt.plot(jeulerb[:,0],jeulerb[:,1],'b-.',marker="o",label="Euler's Method, y0 = 0.001")
+# plt.plot(rk4_ja[:,0],rk4_ja[:,1],'k--',marker="*",label="RK4, y0 = 0.01")
+# plt.plot(rk4_jb[:,0],rk4_jb[:,1],'g-.',marker="o",label="RK4, y0 = 0.001")
+# #plt.plot(joseph_a.t[:],joseph_a.y[0],'g.',marker="o", markersize=10,label="SciPy solve_ivp")
+# plt.title("Joseph's Challenge Problem")
+# plt.xlabel("t")
+# plt.ylabel("y")
+# plt.legend(loc="right")
+# plt.show()
+
+# def vanderpol(t, y):
+#     mu = 1000
+#     dydt = [y[1], mu*(1-y[0]**2)*y[1] - y[0]]
+#     return dydt
+#
+# print("Generate a solution using scipy.integrate.solve_ivp:")
+# #from scipy.integrate import solve_ivp
+# vdpsol = solve_ivp(vanderpol,[0,3000],[2,0])
+# # print("Run the Euler's Method System code:")
+# # euler_sol5d = EulerSys(fun5d,0,[5,6],stepsize,total_steps)
+# # print("Run the RK4 System code:")
+# # rk4_sol5d = RK4Sys(fun5d,0,[5,6],stepsize,total_steps)
+#
+# plt.plot(vdpsol.t[:],vdpsol.y[0,:],'g-',marker="o", markersize=10,label="SciPy solve_ivp, x(t)")
+# plt.title("van der Pol eqn solution with solve_ivp")
+# plt.xlabel("t")
+# plt.ylabel("y")
+# plt.legend(loc="upper left")
+# plt.show()
