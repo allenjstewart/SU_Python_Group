@@ -1,0 +1,40 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\pagestyle{empty}
+\begin{center}
+Python Coding ODE assignment\\[6pt]
+April 2018
+\end{center}
+
+\bigskip
+
+\begin{enumerate}
+    \item{Write code that solves scalar, first-order initial-value problems (IVPs) using Euler's method.}
+    \item{Write code that solves scalar, first-order initial-value problems using fourth-order Runge-Kutta.}
+    \item{Compare and contrast these methods with scipy.integrate.ode and any other Python packages for solving IVPs.}
+    \item{Repeat steps 1-3 for systems of first-order IVPs.}
+    \item{Find the solution to the following IVPs at $t_f=10$ and plot the approximate solution on $t\in[0,t_f]$.}
+    \begin{enumerate}
+        \item{$$y^{\prime}+y=t$$
+              $$y(0)=4$$}
+        \item{$$y^{\prime}=(y-x)^2+1$$
+              $$y(0)=1$$}
+        \item{$$-x^{\prime}+y^{\prime}=6$$
+              $$-x^{\prime}-y^{\prime}=13t$$
+              $$x(0)=5\hspace*{0.9cm}y(0)=6$$}
+        \item{$$x^{\prime}+y^{\prime}=6$$
+              $$-x^{\prime}+y^{\prime}=13t$$
+              $$x(0)=5\hspace*{0.9cm}y(0)=6$$}
+        \item{$$7yy^{\prime\prime}-11(y^{\prime})^2=0$$
+              $$\text{try various initial conditions of the form $y(0)=y_0$}$$}
+    \end{enumerate}
+\end{enumerate}
+
+
+
+\end{document} 
+
+
