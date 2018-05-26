@@ -18,6 +18,6 @@ results = client.get("y7pv-r3kh", limit=2000)
 
 # Convert to pandas DataFrame
 results_df = pd.DataFrame.from_records(results)
-plt.figure();
+plt.figure()
 sector=results_df.groupby('district_sector').summarized_offense_description.value_counts().sort_index()
 sector.unstack().plot(kind='bar')
